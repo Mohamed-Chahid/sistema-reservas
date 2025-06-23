@@ -1,0 +1,11 @@
+# Archivos y carpetas ignorados por Git para un proyecto Java/Maven
+/target/
+/.idea/
+*.iml
+*.class
+*.log
+.DS_Store
+.settings/
+.project
+.classpath
+/.vscode/

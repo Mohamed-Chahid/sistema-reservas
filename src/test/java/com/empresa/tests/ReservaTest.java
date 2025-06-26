@@ -4,8 +4,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import com.empresa.modelo.Reserva;
 
 public class ReservaTest {
+    // Se elimina la variable reservaBase ya que no se utiliza
+
     // Test de ejemplo que siempre pasa
     @Test
     void ejemploTest() {
@@ -80,5 +83,24 @@ public class ReservaTest {
         LocalTime finAnterior = LocalTime.parse("11:00");
         assertFalse(inicio.isBefore(finIgual));
         assertFalse(inicio.isBefore(finAnterior));
+    }
+
+    @Test
+    void testReservaConHorarioOcupado() {
+        Reserva reserva1 = new Reserva(1, 1, 1, LocalDate.now().plusDays(1), LocalTime.of(10, 0), LocalTime.of(11, 0));
+        Reserva reserva2 = new Reserva(2, 1, 1, LocalDate.now().plusDays(1), LocalTime.of(10, 30), LocalTime.of(11, 30));
+        assertTrue(hayConflicto(reserva1, reserva2));
+    }
+
+    @Test
+    void testReservaSinConflicto() {
+        Reserva reserva1 = new Reserva(1, 1, 1, LocalDate.now().plusDays(1), LocalTime.of(12, 0), LocalTime.of(13, 0));
+        Reserva reserva2 = new Reserva(2, 1, 1, LocalDate.now().plusDays(1), LocalTime.of(13, 0), LocalTime.of(14, 0));
+        assertFalse(hayConflicto(reserva1, reserva2));
+    }
+
+    // Método auxiliar para comprobar conflicto entre reservas
+    private boolean hayConflicto(Reserva r1, Reserva r2) {
+        return r1.getHoraInicio().isBefore(r2.getHoraFin()) && r1.getHoraFin().isAfter(r2.getHoraInicio());
     }
 }

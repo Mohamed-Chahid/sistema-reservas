@@ -11,7 +11,7 @@ public class EmpleadoService {
              ResultSet rs = stmt.executeQuery("SELECT * FROM empleado")) {
             System.out.println("\n--- Lista de Empleados ---");
             while (rs.next()) {
-                System.out.println("Número: " + rs.getInt("numEmpleado") +
+                System.out.println("Número: " + rs.getInt("num_empleado") +
                         ", Nombre: " + rs.getString("nombre") +
                         ", Email: " + rs.getString("email") +
                         ", Departamento: " + rs.getString("departamento"));
@@ -50,9 +50,9 @@ public class EmpleadoService {
         System.out.print("Número del empleado a modificar: ");
         String numEmpleadoStr = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(numEmpleadoStr)) return;
-        int numEmpleado;
+        int num_empleado;
         try {
-            numEmpleado = Integer.parseInt(numEmpleadoStr);
+            num_empleado = Integer.parseInt(numEmpleadoStr);
         } catch (NumberFormatException e) {
             System.out.println("Número no válido. Operación cancelada.");
             return;
@@ -66,13 +66,13 @@ public class EmpleadoService {
         System.out.print("Nuevo departamento: ");
         String departamento = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(departamento)) return;
-        String sql = "UPDATE empleado SET nombre = ?, email = ?, departamento = ? WHERE numEmpleado = ?";
+        String sql = "UPDATE empleado SET nombre = ?, email = ?, departamento = ? WHERE num_empleado = ?";
         try (Connection conn = ConexionMySQL.obtenerConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nombre);
             pstmt.setString(2, email);
             pstmt.setString(3, departamento);
-            pstmt.setInt(4, numEmpleado);
+            pstmt.setInt(4, num_empleado);
             int filas = pstmt.executeUpdate();
             if (filas > 0) {
                 System.out.println("Empleado modificado correctamente.");
@@ -89,17 +89,17 @@ public class EmpleadoService {
         System.out.print("Número del empleado a eliminar: ");
         String numEmpleadoStr = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(numEmpleadoStr)) return;
-        int numEmpleado;
+        int num_empleado;
         try {
-            numEmpleado = Integer.parseInt(numEmpleadoStr);
+            num_empleado = Integer.parseInt(numEmpleadoStr);
         } catch (NumberFormatException e) {
             System.out.println("Número no válido. Operación cancelada.");
             return;
         }
-        String sql = "DELETE FROM empleado WHERE numEmpleado = ?";
+        String sql = "DELETE FROM empleado WHERE num_empleado = ?";
         try (Connection conn = ConexionMySQL.obtenerConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, numEmpleado);
+            pstmt.setInt(1, num_empleado);
             int filas = pstmt.executeUpdate();
             if (filas > 0) {
                 System.out.println("Empleado eliminado correctamente.");

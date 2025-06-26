@@ -1,7 +1,7 @@
 package com.empresa.modelo;
 
 public class Empleado {
-    private int id;
+    private int num_empleado;
     private String nombre;
     private String email;
     private String departamento;
@@ -10,16 +10,16 @@ public class Empleado {
     public Empleado() {}
 
     // Constructor completo
-    public Empleado(int id, String nombre, String email, String departamento) {
-        this.id = id;
+    public Empleado(int num_empleado, String nombre, String email, String departamento) {
+        this.num_empleado = num_empleado;
         this.nombre = nombre;
         this.email = email;
         this.departamento = departamento;
     }
 
     // Métodos getters
-    public int getId() {
-        return id;
+    public int getNum_empleado() {
+        return num_empleado;
     }
     public String getNombre() {
         return nombre;
@@ -32,8 +32,8 @@ public class Empleado {
     }
 
     // Métodos setters
-    public void setId(int id) {
-        this.id = id;
+    public void setNum_empleado(int num_empleado) {
+        this.num_empleado = num_empleado;
     }
     public void setNombre(String nombre) {
         this.nombre = nombre;

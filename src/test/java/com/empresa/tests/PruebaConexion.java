@@ -1,7 +1,9 @@
-package com.empresa.util;
+package com.empresa.tests;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import com.empresa.util.ConexionMySQL;
 
 public class PruebaConexion {
     public static void main(String[] args) {

@@ -98,13 +98,15 @@ public class Aplicacion {
         acciones.put(3, () -> ReservaService.modificarReserva(scanner));
         acciones.put(4, () -> ReservaService.eliminarReserva(scanner));
         acciones.put(5, () -> ReservaService.verReservasEmpleado(scanner));
+        acciones.put(6, () -> ReservaService.verReservasSala(scanner));
         do {
             System.out.println("\n--- Gestión de Reservas ---");
             System.out.println("1. Listar reservas");
             System.out.println("2. Añadir reserva");
             System.out.println("3. Modificar reserva");
             System.out.println("4. Cancelar reserva");
-            System.out.println("5. Ver mis reservas");
+            System.out.println("5. Ver reservas de un empleado");
+            System.out.println("6. Ver reservas de una sala");
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();

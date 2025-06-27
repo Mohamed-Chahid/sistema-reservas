@@ -1,10 +1,67 @@
+
+    /**
+     * Muestra todas las reservas asociadas a una sala concreta, buscada por su ID.
+     * <p>
+     * Si no se encuentran reservas, informa al usuario. Si hay error de SQL, muestra el mensaje.
+     * </p>
+     * @param scanner Scanner para entrada de datos del usuario
+     */
 package com.empresa.app;
 
 import com.empresa.util.ConexionMySQL;
 import java.sql.*;
 import java.util.Scanner;
 
+/**
+ * Servicio para la gestión de reservas de salas.
+ * Incluye operaciones CRUD, validaciones y consultas asociadas a reservas.
+ */
 public class ReservaService {
+    /**
+     * Muestra todas las reservas asociadas a una sala concreta, buscada por su ID.
+     * <p>
+     * Si no se encuentran reservas, informa al usuario. Si hay error de SQL, muestra el mensaje.
+     * </p>
+     * @param scanner Scanner para entrada de datos del usuario
+     */
+    public static void verReservasSala(Scanner scanner) {
+        System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
+        System.out.print("Introduce el ID de la sala: ");
+        String entrada = scanner.nextLine();
+        if (Utilidades.cancelarOperacionInicio(entrada)) return;
+        int idSala;
+        try {
+            idSala = Integer.parseInt(entrada);
+        } catch (NumberFormatException e) {
+            System.out.println("ID de sala no válido. Operación cancelada.");
+            return;
+        }
+        String sql = "SELECT * FROM reserva WHERE id_sala = ?";
+        try (Connection conn = ConexionMySQL.obtenerConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idSala);
+            ResultSet rs = pstmt.executeQuery();
+            System.out.println("\n--- Reservas de la sala con ID " + idSala + " ---");
+            boolean hayReservas = false;
+            while (rs.next()) {
+                hayReservas = true;
+                System.out.println("ID: " + rs.getInt("id") +
+                        ", Empleado: " + rs.getInt("num_Empleado") +
+                        ", Fecha: " + rs.getString("fecha") +
+                        ", Hora Inicio: " + rs.getString("hora_inicio") +
+                        ", Hora Fin: " + rs.getString("hora_fin"));
+            }
+            if (!hayReservas) {
+                System.out.println("No se encontraron reservas para esta sala.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error al consultar reservas: " + e.getMessage());
+        }
+    }
+    /**
+     * Lista todas las reservas existentes en el sistema.
+     * Muestra por consola el ID, número de empleado, sala, fecha y horas de cada reserva.
+     */
     public static void listarReservas() {
         try (Connection conn = ConexionMySQL.obtenerConexion();
              Statement stmt = conn.createStatement();
@@ -23,12 +80,25 @@ public class ReservaService {
         }
     }
 
+    /**
+     * Añade una nueva reserva tras validar los campos obligatorios, formato de fecha/hora,
+     * existencia de empleado y sala, y solapamiento de reservas.
+     * <p>
+     * Solicita los datos por consola y muestra mensajes de error si alguna validación falla.
+     * Si la inserción es exitosa, informa al usuario.
+     * </p>
+     * @param scanner Scanner para entrada de datos del usuario
+     */
     public static void anadirReserva(Scanner scanner) {
         System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
         try (Connection conn = ConexionMySQL.obtenerConexion()) {
             System.out.print("Número del empleado: ");
             String numEmpleadoStr = scanner.nextLine();
             if (Utilidades.cancelarOperacionInicio(numEmpleadoStr)) return;
+            if (numEmpleadoStr.trim().isEmpty()) {
+                System.out.println("El número de empleado es obligatorio. Operación cancelada.");
+                return;
+            }
             int numEmpleado;
             try {
                 numEmpleado = Integer.parseInt(numEmpleadoStr);
@@ -39,6 +109,10 @@ public class ReservaService {
             System.out.print("ID de la sala: ");
             String idSalaStr = scanner.nextLine();
             if (Utilidades.cancelarOperacionInicio(idSalaStr)) return;
+            if (idSalaStr.trim().isEmpty()) {
+                System.out.println("El ID de sala es obligatorio. Operación cancelada.");
+                return;
+            }
             int idSala;
             try {
                 idSala = Integer.parseInt(idSalaStr);
@@ -49,12 +123,24 @@ public class ReservaService {
             System.out.print("Fecha (YYYY-MM-DD): ");
             String fecha = scanner.nextLine();
             if (Utilidades.cancelarOperacionInicio(fecha)) return;
+            if (fecha.trim().isEmpty()) {
+                System.out.println("La fecha es obligatoria. Operación cancelada.");
+                return;
+            }
             System.out.print("Hora de inicio (HH:MM): ");
             String horaInicio = scanner.nextLine();
             if (Utilidades.cancelarOperacionInicio(horaInicio)) return;
+            if (horaInicio.trim().isEmpty()) {
+                System.out.println("La hora de inicio es obligatoria. Operación cancelada.");
+                return;
+            }
             System.out.print("Hora de fin (HH:MM): ");
             String horaFin = scanner.nextLine();
             if (Utilidades.cancelarOperacionInicio(horaFin)) return;
+            if (horaFin.trim().isEmpty()) {
+                System.out.println("La hora de fin es obligatoria. Operación cancelada.");
+                return;
+            }
 
             // Validar existencia de empleado y sala
             if (!existeNumEmpleado(conn, numEmpleado)) {
@@ -75,7 +161,6 @@ public class ReservaService {
                 java.time.LocalTime.parse(horaFin);
             } catch (Exception e) {
                 System.out.println("Error: Formato de fecha u hora incorrecto. Use YYYY-MM-DD y HH:MM.");
-                System.exit(1);
                 return;
             }
 
@@ -123,6 +208,15 @@ public class ReservaService {
         }
     }
 
+    /**
+     * Modifica una reserva existente tras validar los campos obligatorios, formato de fecha/hora,
+     * existencia de reserva, empleado y sala, y solapamiento de reservas (excluyendo la propia).
+     * <p>
+     * Solicita los nuevos datos por consola y muestra mensajes de error claros si alguna validación falla.
+     * Si la actualización es exitosa, informa al usuario.
+     * </p>
+     * @param scanner Scanner para entrada de datos del usuario
+     */
     public static void modificarReserva(Scanner scanner) {
         System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
         try (Connection conn = ConexionMySQL.obtenerConexion()) {
@@ -189,7 +283,6 @@ public class ReservaService {
                 java.time.LocalTime.parse(horaFin);
             } catch (Exception e) {
                 System.out.println("Error: Formato de fecha u hora incorrecto. Use YYYY-MM-DD y HH:MM.");
-                System.exit(1);
                 return;
             }
 
@@ -243,6 +336,13 @@ public class ReservaService {
         }
     }
 
+    /**
+     * Elimina una reserva por su ID.
+     * <p>
+     * Solicita el ID por consola, valida el formato y muestra mensajes claros de éxito o error.
+     * </p>
+     * @param scanner Scanner para entrada de datos del usuario
+     */
     public static void eliminarReserva(Scanner scanner) {
         System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
         System.out.print("ID de la reserva a eliminar: ");
@@ -270,6 +370,13 @@ public class ReservaService {
         }
     }
 
+    /**
+     * Muestra todas las reservas asociadas a un empleado, buscado por número o nombre.
+     * <p>
+     * Si no se encuentran reservas, informa al usuario. Si hay error de SQL, muestra el mensaje.
+     * </p>
+     * @param scanner Scanner para entrada de datos del usuario
+     */
     public static void verReservasEmpleado(Scanner scanner) {
         System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
         System.out.print("Introduce el número o el nombre del empleado: ");
@@ -280,7 +387,8 @@ public class ReservaService {
         if (esNum) {
             sql = "SELECT * FROM reserva WHERE num_Empleado = ?";
         } else {
-            sql = "SELECT r.* FROM reserva r JOIN empleado e ON r.num_Empleado = e.numEmpleado WHERE LOWER(e.nombre) COLLATE utf8mb4_unicode_ci = LOWER(?) COLLATE utf8mb4_unicode_ci";
+            // Corregido: la columna correcta es num_empleado
+            sql = "SELECT r.* FROM reserva r JOIN empleado e ON r.num_Empleado = e.num_empleado WHERE LOWER(e.nombre) COLLATE utf8mb4_unicode_ci = LOWER(?) COLLATE utf8mb4_unicode_ci";
         }
         try (Connection conn = ConexionMySQL.obtenerConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -308,6 +416,17 @@ public class ReservaService {
         }
     }
 
+    /**
+     * Comprueba si existe un registro con un ID dado en una tabla de la base de datos.
+     * <p>
+     * Utiliza una consulta SQL parametrizada para evitar inyecciones.
+     * </p>
+     * @param conn Conexión activa a la base de datos
+     * @param tabla Nombre de la tabla (debe ser seguro y controlado)
+     * @param id Identificador a buscar
+     * @return true si existe el registro, false si no
+     * @throws SQLException si ocurre un error de SQL
+     */
     private static boolean existeId(Connection conn, String tabla, int id) throws SQLException {
         String sql = "SELECT COUNT(*) FROM " + tabla + " WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -318,8 +437,18 @@ public class ReservaService {
         }
     }
 
+    /**
+     * Comprueba si existe un empleado con el número dado en la base de datos.
+     * <p>
+     * Utiliza una consulta SQL parametrizada para evitar inyecciones.
+     * </p>
+     * @param conn Conexión activa a la base de datos
+     * @param numEmpleado Número de empleado a buscar
+     * @return true si existe el empleado, false si no
+     * @throws SQLException si ocurre un error de SQL
+     */
     private static boolean existeNumEmpleado(Connection conn, int numEmpleado) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM empleado WHERE numEmpleado = ?";
+        String sql = "SELECT COUNT(*) FROM empleado WHERE num_empleado = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, numEmpleado);
             ResultSet rs = pstmt.executeQuery();

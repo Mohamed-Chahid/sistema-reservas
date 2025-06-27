@@ -1,66 +1,51 @@
 package com.empresa.modelo;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
+/**
+ * Representa una reserva de sala.
+ */
 public class Reserva {
     private int id;
-    private int idEmpleado;
+    private int num_empleado;
     private int idSala;
-    private LocalDate fecha;
-    private LocalTime horaInicio;
-    private LocalTime horaFin;
+    private java.time.LocalDate fecha;
+    private java.time.LocalTime horaInicio;
+    private java.time.LocalTime horaFin;
 
-    // Constructor vacío
+    /** Constructor vacío */
     public Reserva() {}
 
-    // Constructor completo
-    public Reserva(int id, int idEmpleado, int idSala, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
+    /**
+     * Constructor completo
+     */
+    public Reserva(int id, int num_empleado, int idSala, java.time.LocalDate fecha, java.time.LocalTime horaInicio, java.time.LocalTime horaFin) {
         this.id = id;
-        this.idEmpleado = idEmpleado;
+        this.num_empleado = num_empleado;
         this.idSala = idSala;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
     }
 
-    // Métodos getters
-    public int getId() {
-        return id;
-    }
-    public int getIdEmpleado() {
-        return idEmpleado;
-    }
-    public int getIdSala() {
-        return idSala;
-    }
-    public LocalDate getFecha() {
-        return fecha;
-    }
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
-    public LocalTime getHoraFin() {
-        return horaFin;
-    }
+    // Getters
+    public int getId() { return id; }
+    public int getNum_empleado() { return num_empleado; }
+    public int getIdSala() { return idSala; }
+    public java.time.LocalDate getFecha() { return fecha; }
+    public java.time.LocalTime getHoraInicio() { return horaInicio; }
+    public java.time.LocalTime getHoraFin() { return horaFin; }
 
-    // Métodos setters
-    public void setId(int id) {
-        this.id = id;
-    }
-    public void setIdEmpleado(int idEmpleado) {
-        this.idEmpleado = idEmpleado;
-    }
-    public void setIdSala(int idSala) {
-        this.idSala = idSala;
-    }
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-    public void setHoraFin(LocalTime horaFin) {
-        this.horaFin = horaFin;
+    // Setters
+    public void setId(int id) { this.id = id; }
+    public void setNum_empleado(int num_empleado) { this.num_empleado = num_empleado; }
+    public void setIdSala(int idSala) { this.idSala = idSala; }
+    public void setFecha(java.time.LocalDate fecha) { this.fecha = fecha; }
+    public void setHoraInicio(java.time.LocalTime horaInicio) { this.horaInicio = horaInicio; }
+    public void setHoraFin(java.time.LocalTime horaFin) { this.horaFin = horaFin; }
+
+    /**
+     * Valida que la hora de inicio sea anterior a la de fin.
+     */
+    public boolean esHorarioValido() {
+        return horaInicio != null && horaFin != null && horaInicio.isBefore(horaFin);
     }
 }

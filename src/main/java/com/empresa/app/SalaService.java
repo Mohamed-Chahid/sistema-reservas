@@ -21,11 +21,20 @@ public class SalaService {
         }
     }
 
+    /**
+     * Añade una nueva sala tras validar los campos obligatorios y su longitud.
+     * @param scanner Scanner para entrada de datos
+     */
     public static void anadirSala(Scanner scanner) {
         System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
         System.out.print("Nombre de la sala: ");
         String nombre = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(nombre)) return;
+        if (!Utilidades.validarLongitud(nombre, 100, "nombre")) return;
+        if (nombre.trim().isEmpty()) {
+            System.out.println("El nombre es obligatorio. Operación cancelada.");
+            return;
+        }
         System.out.print("Capacidad: ");
         String capacidadStr = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(capacidadStr)) return;
@@ -39,6 +48,11 @@ public class SalaService {
         System.out.print("Recursos: ");
         String recursos = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(recursos)) return;
+        if (!Utilidades.validarLongitud(recursos, 100, "recursos")) return;
+        if (recursos.trim().isEmpty()) {
+            System.out.println("El campo 'recursos' es obligatorio. Operación cancelada.");
+            return;
+        }
         String sql = "INSERT INTO sala (nombre, capacidad, recursos) VALUES (?, ?, ?)";
         try (Connection conn = ConexionMySQL.obtenerConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -52,6 +66,10 @@ public class SalaService {
         }
     }
 
+    /**
+     * Modifica una sala existente tras validar los campos obligatorios y su longitud.
+     * @param scanner Scanner para entrada de datos
+     */
     public static void modificarSala(Scanner scanner) {
         System.out.println("Escriba 'cancelar' o 0 para cancelar la operación");
         System.out.print("ID de la sala a modificar: ");
@@ -67,6 +85,11 @@ public class SalaService {
         System.out.print("Nuevo nombre: ");
         String nombre = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(nombre)) return;
+        if (!Utilidades.validarLongitud(nombre, 100, "nombre")) return;
+        if (nombre.trim().isEmpty()) {
+            System.out.println("El nombre es obligatorio. Operación cancelada.");
+            return;
+        }
         System.out.print("Nueva capacidad: ");
         String capacidadStr = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(capacidadStr)) return;
@@ -80,6 +103,11 @@ public class SalaService {
         System.out.print("Nuevos recursos: ");
         String recursos = scanner.nextLine();
         if (Utilidades.cancelarOperacionInicio(recursos)) return;
+        if (!Utilidades.validarLongitud(recursos, 100, "recursos")) return;
+        if (recursos.trim().isEmpty()) {
+            System.out.println("El campo 'recursos' es obligatorio. Operación cancelada.");
+            return;
+        }
         String sql = "UPDATE sala SET nombre = ?, capacidad = ?, recursos = ? WHERE id = ?";
         try (Connection conn = ConexionMySQL.obtenerConexion();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

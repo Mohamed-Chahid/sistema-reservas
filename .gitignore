@@ -1,4 +1,4 @@
-# Archivos y carpetas ignorados por Git para un proyecto Java/Maven
+# Archivos y carpetas ignorados por Git para un proyecto Java/Maven y varios IDEs
 /target/
 /.idea/
 *.iml
@@ -9,3 +9,14 @@
 .project
 .classpath
 /.vscode/
+# Archivos de sistema
+Thumbs.db
+ehthumbs.db
+desktop.ini
+# Archivos de entorno Python (por si usas scripts auxiliares)
+__pycache__/
+*.pyc
+# Archivos de entorno JetBrains
+.idea/
+# Archivos de entorno NetBeans
+nbproject/

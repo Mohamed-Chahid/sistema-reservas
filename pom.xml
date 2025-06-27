@@ -8,12 +8,13 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.49</version>
+            <version>8.0.33</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -42,7 +43,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- El mainClass por defecto es Aplicacion, pero se puede sobrescribir por línea de comandos -->
+                    <mainClass>com.empresa.app.Aplicacion</mainClass>
                 </configuration>
             </plugin>
         </plugins>

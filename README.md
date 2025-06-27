@@ -30,8 +30,9 @@ Aplicación de consola en Java para gestionar reservas de salas de reuniones en 
 
 ## Uso
 - El menú permite gestionar salas, empleados y reservas.
-- Puedes consultar las reservas de un empleado concreto usando su número (`num_empleado`).
-- En todas las operaciones (excepto listar), puedes cancelar en cualquier momento escribiendo `cancelar` o `0`.
+- Puedes consultar las reservas de un empleado concreto.
+- Puedes consultar las reservas de una sala en concreto.
+- En todas las operaciones, puedes cancelar en cualquier momento escribiendo `cancelar` o `0`.
 - El mensaje "Escriba 'cancelar' o 0 para cancelar la operación" aparece solo una vez al inicio de cada operación.
 - No se requiere contraseña para ninguna operación.
 
